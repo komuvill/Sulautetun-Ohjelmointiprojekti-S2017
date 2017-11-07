@@ -1,4 +1,3 @@
-package ladagame;
 import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
@@ -28,6 +27,10 @@ public class CreateMap {
     private final int sceneWidth = 1280;
     private final int sceneHeight = 720;
     private final double grassWidth = roadWidth * 1.5;
+    private double roadX;
+    private double roadY;
+    private double grassX;
+    private double grassY;
     
     
     //Timer, node indexing, scene creation
@@ -40,6 +43,34 @@ public class CreateMap {
         scene = new Scene(groupForMap, sceneWidth , sceneHeight);
         scene.setFill(Color.GREEN);
         generateRoad();
+    }
+    
+    public int getRoadHeight() {
+        return roadHeight;
+    }
+    
+    public int getRoadWidth() {
+        return roadWidth;
+    }
+    
+    public double getGrassWidth() {
+        return grassWidth;
+    }
+    
+    public double getRoadX() {
+        return roadX;
+    }
+    
+    public double getRoadY() {
+        return roadY;
+    }
+    
+    public double getGrassX() {
+        return grassX;
+    }
+    
+    public double getGrassY() {
+        return grassY;
     }
 
     private String roadDirection(){
@@ -85,11 +116,14 @@ public class CreateMap {
             int pictureCounterRoad = (int) (roadImage.getHeight() / roadHeight) - roadHeight; 
             int pictureCounterGrass = (int) (grassImage.getHeight() / roadHeight) - roadHeight;
             
+            private final ArrayList<Rectangle> despawn = new ArrayList<>();
+            
             @Override
             public void handle(long t) {
                 
                 Rectangle road = new Rectangle(rect.get(rect.size()-1).getX(), 0, roadWidth, roadHeight);
                 Rectangle grass = new Rectangle(road.getX()-107, 0, grassWidth, roadHeight);
+                
                 
                 newRoadImage = new WritableImage(roadImageReader, 0, pictureCounterRoad * roadHeight, roadWidth, roadHeight);
                 newGrassImage = new WritableImage(grassImageReader, 0, pictureCounterGrass * roadHeight, roadWidth, roadHeight);
@@ -120,7 +154,7 @@ public class CreateMap {
                 else{
                     tick--;
                 }
-
+                
                 rect.forEach((node) -> {
                     
                     //Move all of the slices of road horizontally left or right, depending on the random number generator
@@ -135,14 +169,27 @@ public class CreateMap {
                         case "straight":
                             break;
                         }
+                        
+                        
+                        
+                    }
+                    if(node.getY() > scene.getHeight()) {
+                            groupForMap.getChildren().remove(node);
+                            despawn.add(node);
+                            
                     }
                     //Move all of the slices of road vertically
                     node.setY(node.getY() + roadHeight);
                 });
+                if(!despawn.isEmpty()) {
+                        rect.removeAll(despawn);
+                        despawn.clear();
+                }
+                if(rect.size() > 100)
+                roadX = rect.get(100).getX() + 107;
+                
             }
         };
-        
         timer.start();
     }
 }
-

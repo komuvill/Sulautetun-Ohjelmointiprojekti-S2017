@@ -13,3 +13,6 @@ Lisätty myös SerialRotationReader.java, josta siis voidaan luoda sarjamonitori
 
 Lisätty CreateMap.java jolla luodaan pelialue. LadaGame.java toimii projektissa pääluokkana.
 -MMise
+
+Lisätty luokkakaavio
+-MMise

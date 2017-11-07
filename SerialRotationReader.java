@@ -69,6 +69,13 @@ public class SerialRotationReader implements SerialPortEventListener {
     public float getRotation(){
         return rotation;
     }
+    
+    public void close(){
+        if(serialPort != null){
+            serialPort.removeEventListener();
+            serialPort.close();
+        }
+    }
 
     @Override
     public void serialEvent(SerialPortEvent oEvent) {

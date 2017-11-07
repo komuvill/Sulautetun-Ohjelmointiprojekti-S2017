@@ -1,8 +1,7 @@
 # Sulautetun-Ohjelmointiprojekti-S2017
 Sulautetun järjestelmän ohjelmointiprojekti, OAMK Syksy 2017
 
-#Lada: The Ultimate Challenge 2017
-
+Lada: The Ultimate Challenge 2017
 
 7.11.2017
 Lisätty mukautettu Madgwick-suodatusta hyödyntävä lähdekoodi (lähde: https://www.arduino.cc/en/Tutorial/Genuino101CurieIMUOrientationVisualiser). Koodia mukautettu niin, että se antaa ulos vain tarvitsemamme kallistuskulman. 

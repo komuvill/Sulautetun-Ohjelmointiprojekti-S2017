@@ -1,3 +1,4 @@
+package ladagame;
 import java.util.ArrayList;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Rectangle;
@@ -86,7 +87,7 @@ public class CreateMap {
             
             @Override
             public void handle(long t) {
-                System.out.println(pictureCounterRoad);
+                
                 Rectangle road = new Rectangle(rect.get(rect.size()-1).getX(), 0, roadWidth, roadHeight);
                 Rectangle grass = new Rectangle(road.getX()-107, 0, grassWidth, roadHeight);
                 
@@ -120,23 +121,23 @@ public class CreateMap {
                     tick--;
                 }
 
-                rect.forEach((kek) -> {
+                rect.forEach((node) -> {
                     
                     //Move all of the slices of road horizontally left or right, depending on the random number generator
-                    if(rect.indexOf(kek) == rect.size() - 1){
+                    if(rect.indexOf(node) == rect.size() - 1){
                         switch(direction) {
                         case "left":
-                                kek.setX(kek.getX() <= 100 ? 100 : kek.getX() - 2);
+                                node.setX(node.getX() <= 100 ? 100 : node.getX() - 2);
                             break;
                         case "right":
-                                kek.setX(kek.getX() >= scene.getWidth() - (road.getWidth()+100) ? scene.getWidth() - (road.getWidth()+100) :kek.getX() +2);
+                                node.setX(node.getX() >= scene.getWidth() - (road.getWidth()+100) ? scene.getWidth() - (road.getWidth()+100) :node.getX() +2);
                             break;  
                         case "straight":
                             break;
                         }
                     }
                     //Move all of the slices of road vertically
-                    kek.setY(kek.getY() + roadHeight);
+                    node.setY(node.getY() + roadHeight);
                 });
             }
         };
@@ -144,3 +145,4 @@ public class CreateMap {
         timer.start();
     }
 }
+

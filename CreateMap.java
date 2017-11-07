@@ -45,7 +45,7 @@ public class CreateMap {
         generateRoad();
     }
     
-    public int getRoadHeight() {
+    /*public int getRoadHeight() {
         return roadHeight;
     }
     
@@ -55,13 +55,13 @@ public class CreateMap {
     
     public double getGrassWidth() {
         return grassWidth;
-    }
+    }*/
     
     public double getRoadX() {
         return roadX;
     }
     
-    public double getRoadY() {
+    /*public double getRoadY() {
         return roadY;
     }
     
@@ -71,7 +71,7 @@ public class CreateMap {
     
     public double getGrassY() {
         return grassY;
-    }
+    }*/
 
     private String roadDirection(){
         

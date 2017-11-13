@@ -7,7 +7,7 @@ class highscoreServer:
         self.port = port
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.sock.settimeout(None)
-        self.db = pymysql.connect(host="mysli.oamk.fi", user="t6kovi01", passwd="smp7Nn7ZZduRg6M8", db="opisk_t6kovi01")
+        self.db = pymysql.connect(host="mysli.oamk.fi", user="t6kovi01", passwd="", db="opisk_t6kovi01")
         self.cur = self.db.cursor()
     def initialise(self):
         try:

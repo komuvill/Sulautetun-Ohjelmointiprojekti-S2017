@@ -9,10 +9,13 @@ import javafx.stage.Stage;
 public class LadaGame extends Application {
     Group god = new Group();
     Scene scene;
+    public String lada = "lada.mp3";
+    Media hit = new Media(new File(lada).toURI().toString());
+    MediaPlayer mediaPlayer = new MediaPlayer(hit);
     
     @Override
     public void start(Stage primaryStage) {
-        
+        mediaPlayer.play();
         AnimationTimer timer;
         CreateMap createMap = new CreateMap();
         createMap.generateRoad();

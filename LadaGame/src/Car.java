@@ -23,6 +23,10 @@ public class Car extends Rectangle{
     private double roadX;
     private String direction;
     private double degree;
+    private double mouseCenter = sceneWidth / 2;
+    private double deadzone = 20;
+    private double mouseX = 0;
+    private double velocity = 0;
      
     public Car(double x, double y, double w, double h, Image carImage) {
         super(x, y, w, h);
@@ -31,6 +35,10 @@ public class Car extends Rectangle{
 
     public Car() {
         
+    }
+    
+    public void move(MouseEvent e) {
+        mouseX = e.getSceneX() - mouseCenter;
     }
     
     public Boolean checkCollision(Shape other) { //palauttaa tosi jos tämä ja other leikkaa
@@ -52,12 +60,12 @@ public class Car extends Rectangle{
         obstacles.setManaged(false);
         playerGroup.setManaged(false);
         
-        Car player = new Car(600, 400, 75, 150, new Image("picassoRED.png"));
+        Car player = new Car(600, 500, 75, 150, new Image("picassoRED.png"));
         
-        player.setOnMouseDragged((MouseEvent e) -> { //Ohjaus hiirellä
+        /*player.setOnMouseDragged((MouseEvent e) -> { //Ohjaus hiirellä
             player.setX(e.getSceneX() - player.getWidth() / 2);
             player.setY(e.getSceneY() - player.getHeight() / 2);
-        });
+        });*/
         
         
         obstacles.getChildren().addAll(nodes); //autot
@@ -75,7 +83,16 @@ public class Car extends Rectangle{
             
             @Override
             public void handle(long now) {
-                if(Math.random() * 100 < ++timer) { //spawn
+                
+                if(Math.abs(mouseX) > deadzone) { //liike
+                    velocity += mouseX / 100;
+                    if(Math.abs(velocity) > 60) velocity = 60 * mouseX / Math.abs(mouseX);
+                } else velocity = velocity * 0.9;
+                player.setX(player.getX() + velocity / 6);
+                player.setRotate(velocity / 2);
+                
+                
+                if(Math.random() * 1500 < ++timer && timer > 100) { //spawn
                     Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 100), -200, 75, 150, new Image("picassoGREEN.png"));
                     nodes.add(newCar);
                     newCar.setRotate(180);
@@ -95,6 +112,7 @@ public class Car extends Rectangle{
                         default:
                             break;
                     }
+                    //System.out.println(degree);
                     newCar.setRotate(degree);
                     //if(newCar.getX() < sceneWidth / 2 - 50) newCar.setRotate(180 - newCar.getRotate() + 180);*/
                     

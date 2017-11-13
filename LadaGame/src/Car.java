@@ -18,8 +18,11 @@ public class Car extends Rectangle{
     Group obstacles = new Group();
     Group playerGroup = new Group();
     StackPane stack = new StackPane();
-    int sceneWidth = createMap.sceneWidth;
-    int sceneHeight = createMap.sceneHeight;
+    private final int sceneWidth = createMap.sceneWidth;
+    private final int sceneHeight = createMap.sceneHeight;
+    private double roadX;
+    private String direction;
+    private double degree;
      
     public Car(double x, double y, double w, double h, Image carImage) {
         super(x, y, w, h);
@@ -34,16 +37,22 @@ public class Car extends Rectangle{
         return Shape.intersect(this, other).getBoundsInLocal().getWidth() != -1;
     }
     
+    public void setRoadX(double roadX) {
+        this.roadX = roadX;
+    }
+    
+    public void setDirection(String direction) {
+        this.direction = direction;
+    }
+    
     public void generateCar() {
         
         ArrayList<Car> nodes = new ArrayList();
-        
 
-        
         obstacles.setManaged(false);
         playerGroup.setManaged(false);
         
-        Car player = new Car(600, 400, 100, 200, new Image("picassoRED.png"));
+        Car player = new Car(600, 400, 75, 150, new Image("picassoRED.png"));
         
         player.setOnMouseDragged((MouseEvent e) -> { //Ohjaus hiirellä
             player.setX(e.getSceneX() - player.getWidth() / 2);
@@ -66,14 +75,30 @@ public class Car extends Rectangle{
             
             @Override
             public void handle(long now) {
-                if(Math.random() * 1500 < ++timer) { //spawn
-                    Car newCar = new Car((int) (Math.random() * sceneWidth), -200, 100, 200, new Image("picassoGREEN.png"));
+                if(Math.random() * 100 < ++timer) { //spawn
+                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 100), -200, 75, 150, new Image("picassoGREEN.png"));
                     nodes.add(newCar);
                     newCar.setRotate(180);
-                    if(timer % 3 == 0) { //Esimerkki, spawnaa autoja satunnaisesti eri suuntiin
-                        newCar.setRotate(Math.random() * 45 + 180);
-                        if(newCar.getX() < sceneWidth / 2 - 50) newCar.setRotate(180 - newCar.getRotate() + 180);
+                        
+                    switch (direction) {
+                        case "left":
+                            degree = 160;
+                            newCar.setX(newCar.getX() - 60);
+                            break;
+                        case "straight":
+                            degree = 180;
+                            break;
+                        case "right":
+                            degree = 200;
+                            newCar.setX(newCar.getX() + 100);
+                            break;
+                        default:
+                            break;
                     }
+                    System.out.println(degree);
+                    newCar.setRotate(degree);
+                    //if(newCar.getX() < sceneWidth / 2 - 50) newCar.setRotate(180 - newCar.getRotate() + 180);*/
+                    
                     obstacles.getChildren().add(nodes.get(nodes.size() -1));
                     timer = 0;
                 }
@@ -83,8 +108,8 @@ public class Car extends Rectangle{
                 for(Car car : nodes) { //liike
                     double rotation = car.getRotate() - 180;
                     
-                    car.setY(car.getY() + 5 + 5 * ((rotation == 0 ? 45 : (45 - Math.abs(rotation))) / 45));
-                    car.setX(car.getX() + 5 * (rotation / -45));
+                    car.setY(car.getY() + 5 + 1.15 + 1.15 * ((rotation == 0 ? 45 : (45 - Math.abs(rotation))) / 45));
+                    car.setX(car.getX() + 1.4 * (rotation / -45));
                     
                     if(car.getY() >= sceneHeight) { //despawn muistiin
                         obstacles.getChildren().remove(car);

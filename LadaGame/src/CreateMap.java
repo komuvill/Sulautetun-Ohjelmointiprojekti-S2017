@@ -30,6 +30,7 @@ public class CreateMap {
     private double roadY;
     private double grassX;
     private double grassY;
+    private String direction = "straight";
     
     
     //Timer, node indexing, scene creation
@@ -40,8 +41,11 @@ public class CreateMap {
     public CreateMap(){
         
     }
+    public String getDirection() {
+        return direction;
+    }
     
-    /*public int getRoadHeight() {
+    public int getRoadHeight() {
         return roadHeight;
     }
     
@@ -51,13 +55,13 @@ public class CreateMap {
     
     public double getGrassWidth() {
         return grassWidth;
-    }*/
+    }
     
     public double getRoadX() {
         return roadX;
     }
     
-    /*public double getRoadY() {
+    public double getRoadY() {
         return roadY;
     }
     
@@ -67,13 +71,13 @@ public class CreateMap {
     
     public double getGrassY() {
         return grassY;
-    }*/
+    }
 
     private String roadDirection(){
         
         //Random numbers generate directions for the road
         int i = (int) (Math.random() * 3);
-        String direction = null;
+        direction = null;
         switch (i) {
             case 0:
                 direction = "left";
@@ -105,7 +109,7 @@ public class CreateMap {
         
         
         timer = new AnimationTimer() {
-            String direction = "straight";
+            
             int tick = 150; //"Slices" of road that will go to a same direction
             
             //Counters for dividing textures
@@ -155,14 +159,27 @@ public class CreateMap {
                     if(rect.indexOf(node) == rect.size() - 1){
                         switch(direction) {
                         case "left":
-                                node.setX(node.getX() <= 100 ? 100 : node.getX() - 2);
+                                //node.setX(node.getX() <= 100 ? 100 : node.getX() - 2);
+                                if(node.getX() <= 100){
+                                    direction = "straight";
+                                }
+                                else{
+                                    node.setX(node.getX() - 2);
+                                }
                             break;
                         case "right":
-                                node.setX(node.getX() >= sceneWidth - (road.getWidth()+100) ? sceneWidth - (road.getWidth()+100) :node.getX() +2);
+                                //node.setX(node.getX() >= sceneWidth - (road.getWidth()+100) ? sceneWidth - (road.getWidth()+100) :node.getX() +2);
+                                if(node.getX() >= sceneWidth - (road.getWidth() + 100)) {
+                                    direction = "straight";
+                                }
+                                else{
+                                    node.setX(node.getX() + 2);
+                                }
                             break;  
                         case "straight":
                             break;
                         }
+                        
                     }
                     if(node.getY() > sceneHeight) {
                             groupForMap.getChildren().remove(node);
@@ -171,13 +188,15 @@ public class CreateMap {
                     }
                     //Move all of the slices of road vertically
                     node.setY(node.getY() + roadHeight);
+                    roadX = node.getX();
+                    //System.out.println("CreateMap roadX : " +(int) (roadX));
                 });
                 if(!despawn.isEmpty()) {
                         rect.removeAll(despawn);
                         despawn.clear();
                 }
-                if(rect.size() > 100)
-                roadX = rect.get(100).getX() + 107;  
+                /*if(rect.size() > 100)
+                roadX = rect.get(100).getX() + 107;  */
             }
         };
         timer.start();

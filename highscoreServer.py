@@ -26,7 +26,7 @@ class highscoreServer:
             stringdata = data.decode('utf-8', 'ignore')
             stringdata = stringdata[2:len(stringdata)]
             print("Received data: ", stringdata)
-            request.send("Received data, go fuck yourself!".encode('utf-8'))
+            request.send("Received data!".encode('utf-8'))
         except socket.error:
             print("Socket error in serve_forever-function")
             return

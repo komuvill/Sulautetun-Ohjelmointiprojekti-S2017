@@ -16,3 +16,6 @@ Lisätty CreateMap.java jolla luodaan pelialue. LadaGame.java toimii projektissa
 
 Lisätty luokkakaavio
 -MMise
+
+13.11 Saatiin auto- ja karttaluokat yhteensopiviksi
+-MMise

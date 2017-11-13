@@ -19,3 +19,5 @@ Lisätty luokkakaavio
 
 13.11 Saatiin auto- ja karttaluokat yhteensopiviksi
 -MMise
+
+Lisätty highscoreserver-scripti, jonne olisi tarkoitus lähettää pistemääriä ja nimiä pelistä

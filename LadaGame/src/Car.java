@@ -95,7 +95,6 @@ public class Car extends Rectangle{
                         default:
                             break;
                     }
-                    System.out.println(degree);
                     newCar.setRotate(degree);
                     //if(newCar.getX() < sceneWidth / 2 - 50) newCar.setRotate(180 - newCar.getRotate() + 180);*/
                     

@@ -21,7 +21,7 @@ public class CreateMap {
     WritableImage newGrassImage;
     
     //Game world properties
-    private final int roadWidth = 450;
+    private final int roadWidth = 440;
     private final int roadHeight = 5;
     public final int sceneWidth = 1280;
     public final int sceneHeight = 720;
@@ -30,6 +30,7 @@ public class CreateMap {
     private double roadY;
     private double grassX;
     private double grassY;
+    private double roadTopX;
     private String direction = "straight";
     
     
@@ -59,6 +60,10 @@ public class CreateMap {
     
     public double getRoadX() {
         return roadX;
+    }
+    
+    public double getRoadTopX() {
+        return roadTopX;
     }
     
     public double getRoadY() {
@@ -98,10 +103,10 @@ public class CreateMap {
         
         groupForMap.setManaged(false);
         //Create starting block so the road starts off going straight
-        Rectangle startRoadBlock = new Rectangle(sceneWidth / 3, 0, roadWidth, sceneHeight);
-        Rectangle startGrassBlock = new Rectangle(sceneWidth / 4, 0, grassWidth, sceneHeight);
-        startRoadBlock.setFill(new ImagePattern(roadImage, 0, 0, roadWidth, sceneHeight, false));
-        startGrassBlock.setFill(new ImagePattern(grassImage, 0, 0, grassWidth, sceneHeight, false));
+        Rectangle startRoadBlock = new Rectangle(sceneWidth / 2 - roadWidth / 2, 0, roadWidth, sceneHeight);
+        Rectangle startGrassBlock = new Rectangle(startRoadBlock.getX() - (grassWidth - roadWidth) / 2, 0, grassWidth, sceneHeight);
+        startRoadBlock.setFill(new ImagePattern(roadImage, 0, 0, 1, 1, true));
+        startGrassBlock.setFill(new ImagePattern(grassImage, 0, 0, 1, 1, true));
         rect.add(startGrassBlock); //rect is the ArrayList that acts as an index for the handle method
         rect.add(startRoadBlock);
         groupForMap.getChildren().add(startGrassBlock);
@@ -113,8 +118,8 @@ public class CreateMap {
             int tick = 150; //"Slices" of road that will go to a same direction
             
             //Counters for dividing textures
-            int pictureCounterRoad = (int) (roadImage.getHeight() / roadHeight) - roadHeight; 
-            int pictureCounterGrass = (int) (grassImage.getHeight() / roadHeight) - roadHeight;
+            int pictureCounterRoad = (int) (roadImage.getHeight() / roadHeight) - 1; 
+            int pictureCounterGrass = (int) (grassImage.getHeight() / roadHeight) - 1;
             
             private final ArrayList<Rectangle> despawn = new ArrayList<>();
             
@@ -122,25 +127,22 @@ public class CreateMap {
             public void handle(long t) {
                 
                 Rectangle road = new Rectangle(rect.get(rect.size()-1).getX(), 0, roadWidth, roadHeight);
-                Rectangle grass = new Rectangle(road.getX()-107, 0, grassWidth, roadHeight);
+                Rectangle grass = new Rectangle(road.getX() - (grassWidth - roadWidth) / 2, 0, grassWidth, roadHeight);
                             
                 newRoadImage = new WritableImage(roadImageReader, 0, pictureCounterRoad * roadHeight, roadWidth, roadHeight);
                 newGrassImage = new WritableImage(grassImageReader, 0, pictureCounterGrass * roadHeight, roadWidth, roadHeight);
                    
                 //If clauses prevent the counters from going negative
-                if(pictureCounterRoad <= 0) {
-                    pictureCounterRoad = (int) (roadImage.getHeight() / roadHeight);
+                if(--pictureCounterRoad < 0) {
+                    pictureCounterRoad = (int) (roadImage.getHeight() / roadHeight) -1;
                 }
                 
-                if(pictureCounterGrass <= 0) {
-                    pictureCounterGrass = (int) (grassImage.getHeight() / roadHeight);
+                if(--pictureCounterGrass < 0) {
+                    pictureCounterGrass = (int) (grassImage.getHeight() / roadHeight) -1;
                 }
                 
-                pictureCounterGrass -= roadHeight;
-                pictureCounterRoad -= roadHeight;
-                
-                road.setFill(new ImagePattern(newRoadImage, 0, 0, roadWidth, roadHeight, false));
-                grass.setFill(new ImagePattern(newGrassImage, 0, 0, grassWidth, roadHeight, false));
+                road.setFill(new ImagePattern(newRoadImage, 0, 0, 1, 1, true));
+                grass.setFill(new ImagePattern(newGrassImage, 0, 0, 1, 1, true));
                 rect.add(grass);
                 rect.add(road);
                 groupForMap.getChildren().add(grass);
@@ -157,10 +159,12 @@ public class CreateMap {
                     
                     //Move all of the slices of road horizontally left or right, depending on the random number generator
                     if(rect.indexOf(node) == rect.size() - 1){
+                        roadTopX = node.getX(); //Set coordinate for the top of the road
+                        
                         switch(direction) {
                         case "left":
                                 //node.setX(node.getX() <= 100 ? 100 : node.getX() - 2);
-                                if(node.getX() <= 100){
+                                if(node.getX() <= (grassWidth - roadWidth) / 2){
                                     direction = "straight";
                                 }
                                 else{
@@ -169,7 +173,7 @@ public class CreateMap {
                             break;
                         case "right":
                                 //node.setX(node.getX() >= sceneWidth - (road.getWidth()+100) ? sceneWidth - (road.getWidth()+100) :node.getX() +2);
-                                if(node.getX() >= sceneWidth - (road.getWidth() + 100)) {
+                                if(node.getX() >= sceneWidth - roadWidth - (grassWidth - roadWidth) / 2) {
                                     direction = "straight";
                                 }
                                 else{
@@ -188,8 +192,11 @@ public class CreateMap {
                     }
                     //Move all of the slices of road vertically
                     node.setY(node.getY() + roadHeight);
-                    roadX = node.getX();
-                    //System.out.println("CreateMap roadX : " +(int) (roadX));
+                    
+                    if(rect.indexOf(node) == 0) { //Get coordinates for the bottom of the road
+                        grassX = node.getX();
+                        roadX = grassX + (grassWidth - roadWidth) / 2;
+                    }
                 });
                 if(!despawn.isEmpty()) {
                         rect.removeAll(despawn);

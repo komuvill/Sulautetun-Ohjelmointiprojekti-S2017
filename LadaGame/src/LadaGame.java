@@ -20,7 +20,7 @@ public class LadaGame extends Application {
         createCar.generateCar();
         scene = new Scene(god,createMap.sceneWidth,createMap.sceneHeight);
         scene.setFill(Color.GREEN);
-        god.getChildren().addAll(createMap.groupForMap,createCar.stack);
+        god.getChildren().addAll(createMap.groupForMap, createCar.stack);
         
         scene.setOnMouseMoved((MouseEvent e) -> {
             createCar.move(e);
@@ -31,7 +31,6 @@ public class LadaGame extends Application {
             public void handle(long now) {
                 createCar.setRoadX(createMap.getRoadTopX());
                 createCar.setDirection(createMap.getDirection());
-                //System.out.println("LadaGame roadX: " + createMap.getRoadX());
             }
             
         };

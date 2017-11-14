@@ -17,7 +17,12 @@ Lisätty CreateMap.java jolla luodaan pelialue. LadaGame.java toimii projektissa
 Lisätty luokkakaavio
 -MMise
 
-13.11 Saatiin auto- ja karttaluokat yhteensopiviksi
+13.11 
+Saatiin auto- ja karttaluokat yhteensopiviksi
 -MMise
 
 Lisätty highscoreserver-scripti, jonne olisi tarkoitus lähettää pistemääriä ja nimiä pelistä -VV
+
+14.11
+
+Lisätty LadaGameSerial, jossa auton ohjaus tapahtuu Genuinoa kallistelemalla. Ohjelmassa on myös EventHandler, joka sulkee sarjaportin kun ohjelma suljetaan. Ohjauksen herkkyyttä ei ole vielä säädetty. -VV

@@ -107,13 +107,25 @@ public class Car extends Rectangle{
                     velocity += mouseX / 100;
                     if(Math.abs(velocity) > 60) velocity = 60 * mouseX / Math.abs(mouseX);
                 } else velocity = velocity * 0.9;
+                
                 player.setX(player.getX() + velocity / 6);
+                
+                if(player.getX() < 0) {
+                    player.setX(0);
+                    velocity = 0;
+                }
+                else if(player.getX() > sceneWidth - 75) {
+                    player.setX(sceneWidth - 75);
+                    velocity = 0;
+                }
+                
                 player.setRotate(velocity / 2);
                 
-                
-                if(Math.random() * 1500 < ++timer && timer > 100) { //spawn
-                    newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 100), -200, 75, 150, new Image("picassoGREEN.png"));
-                    newCar.setState(NORMAL);
+               
+
+                if(Math.random() * 1500 < ++timer && timer > 50) { //spawn
+                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 75), -200, 75, 150, new Image("picassoGREEN.png"));
+
                     nodes.add(newCar);
                     newCar.setRotate(180);
                         

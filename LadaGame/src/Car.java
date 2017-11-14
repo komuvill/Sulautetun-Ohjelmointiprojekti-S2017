@@ -23,10 +23,28 @@ public class Car extends Rectangle{
     private double roadX;
     private String direction;
     private double degree;
-    private double mouseCenter = sceneWidth / 2;
-    private double deadzone = 20;
+    private final double mouseCenter = sceneWidth / 2;
+    private final double deadzone = 20;
     private double mouseX = 0;
     private double velocity = 0;
+    Car newCar;
+    
+    //Explosive stuff
+    Explosion explosion = new Explosion();
+    static final int NORMAL = 0;
+    static final int REQUEST_EXPLOSION = 1;
+    static final int TARGET_EXPLODING = 2;
+    static final int TARGET_DESTROYED = 3;
+    int state = NORMAL;
+    
+    
+    public void setState(int state) {
+        this.state = state;
+    }
+    
+    public int getState() {
+        return state;
+    }
      
     public Car(double x, double y, double w, double h, Image carImage) {
         super(x, y, w, h);
@@ -55,6 +73,7 @@ public class Car extends Rectangle{
     
     public void generateCar() {
         
+        
         ArrayList<Car> nodes = new ArrayList();
 
         obstacles.setManaged(false);
@@ -72,7 +91,7 @@ public class Car extends Rectangle{
         playerGroup.getChildren().add(player); //pelaaja
         
         
-        stack.getChildren().addAll(obstacles, playerGroup);
+        stack.getChildren().addAll(obstacles, playerGroup, explosion.explosions);
         
         
         animation_timer = new AnimationTimer() { //Game Loop
@@ -93,7 +112,8 @@ public class Car extends Rectangle{
                 
                 
                 if(Math.random() * 1500 < ++timer && timer > 100) { //spawn
-                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 100), -200, 75, 150, new Image("picassoGREEN.png"));
+                    newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 100), -200, 75, 150, new Image("picassoGREEN.png"));
+                    newCar.setState(NORMAL);
                     nodes.add(newCar);
                     newCar.setRotate(180);
                         
@@ -112,9 +132,7 @@ public class Car extends Rectangle{
                         default:
                             break;
                     }
-                    //System.out.println(degree);
                     newCar.setRotate(degree);
-                    //if(newCar.getX() < sceneWidth / 2 - 50) newCar.setRotate(180 - newCar.getRotate() + 180);*/
                     
                     obstacles.getChildren().add(nodes.get(nodes.size() -1));
                     timer = 0;
@@ -124,29 +142,26 @@ public class Car extends Rectangle{
                 
                 for(Car car : nodes) { //liike
                     double rotation = car.getRotate() - 180;
-                    
                     car.setY(car.getY() + 5 + 1.15 + 1.15 * ((rotation == 0 ? 45 : (45 - Math.abs(rotation))) / 45));
                     car.setX(car.getX() + 1.4 * (rotation / -45));
-                    
+ 
                     if(car.getY() >= sceneHeight) { //despawn muistiin
-                        obstacles.getChildren().remove(car);
+                        
                         despawning.add(car);
                         continue;
                     }
                     if(player.checkCollision(car)) {
-                        collided = true;
+                        car.setState(REQUEST_EXPLOSION);
+                        explosion.explode(car);
+                        car.setOpacity(0);
                     }
                 }
                 
                 if(!despawning.isEmpty()) { //despawn
+                    obstacles.getChildren().removeAll(despawning);
                     nodes.removeAll(despawning);
                     despawning.clear();
                 }
-                
-                if(collided) { //KOLLISIO HAVAITTU
-                
-                }
-
             }
         };
         animation_timer.start();

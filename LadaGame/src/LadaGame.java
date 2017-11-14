@@ -35,7 +35,7 @@ public class LadaGame extends Application {
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                createCar.setRoadX(createMap.getRoadX());
+                createCar.setRoadX(createMap.getRoadTopX());
                 createCar.setDirection(createMap.getDirection());
             }
             

@@ -25,4 +25,4 @@ Lisätty highscoreserver-scripti, jonne olisi tarkoitus lähettää pistemääri
 
 14.11
 
-Lisätty LadaGameSerial, jossa auton ohjaus tapahtuu Genuinoa kallistelemalla. Ohjelmassa on myös EventHandler, joka sulkee sarjaportin kun ohjelma suljetaan. Ohjauksen herkkyyttä ei ole vielä säädetty. -VV
+Lisätty LadaGameSerial, jossa auton ohjaus tapahtuu Genuinoa kallistelemalla. Ohjelmassa on myös EventHandler, joka sulkee sarjaportin kun ohjelma suljetaan. Ohjauksen herkkyyttä ei ole vielä säädetty. Poistettu myöhemmin, että saadaan merged ja forkit toimimaan kunnolla ":D" -VV

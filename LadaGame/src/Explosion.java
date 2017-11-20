@@ -4,7 +4,6 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /*
@@ -14,7 +13,7 @@ import javafx.scene.shape.Shape;
 public class Explosion 
 {
     Group explosions = new Group();
-    Rectangle animation;
+    //Circle animation;
     Circle particle;
     double alphaColor = 0.0;
     Color startColor = new Color(1.0, 1.0, 0.0, 1.0);
@@ -45,18 +44,18 @@ public class Explosion
     
     public void explode(Car target) {
         
-        animation = new Rectangle(target.getX(), target.getY(), target.getWidth(), target.getHeight());
         
-        for(int i = 0; i < 30; i++) {
-            
-            particle = new Circle(target.getX() + i, target.getY() + i, 5);
+        for(int i = 0; i < 15; i++) {
+            particle = new Circle(target.getX() - 50 + Math.random() * 100, target.getY() + Math.random() * 100, 5);
             particle.setFill(Color.ORANGERED);
             particle.setOpacity(alphaColor);
             explosions.getChildren().add(particle);
         }
-        animation.setRotate(target.getRotate());
-        animation.setFill(startColor);
-        animation.setOpacity(alphaColor);
-        explosions.getChildren().add(animation);
+        for(int i = 0; i < 15; i++) {
+            particle = new Circle(target.getX() - 50 + Math.random() * 100, target.getY() + Math.random() * 100, 5);
+            particle.setFill(Color.YELLOW);
+            particle.setOpacity(alphaColor);
+            explosions.getChildren().add(particle);
+        }
     }
 }

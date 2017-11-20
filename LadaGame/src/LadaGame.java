@@ -18,7 +18,6 @@ public class LadaGame extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-        //Perse
         mediaPlayer.play();
         AnimationTimer timer;
         CreateMap createMap = new CreateMap();

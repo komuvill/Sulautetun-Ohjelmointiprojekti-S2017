@@ -17,13 +17,17 @@ import gnu.io.SerialPortEventListener;
 import java.util.Enumeration;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
+import javafx.application.Platform;
 
 public class LadaGame extends Application implements SerialPortEventListener {
     Group god = new Group();
     Scene scene;
+    Scene menuScene;
     public String lada = "lada.mp3";
     Media hit = new Media(new File(lada).toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
+    Car createCar;
+    CreateMap createMap;
     SerialPort serialPort;
     //Muuta vastaamaan käytettävää porttia
     static final String PORT_NAMES[] = { 
@@ -83,30 +87,50 @@ public class LadaGame extends Application implements SerialPortEventListener {
                 System.err.println(e.toString());
         }
         
-        mediaPlayer.play();
-        AnimationTimer timer;
-        CreateMap createMap = new CreateMap();
-        createMap.generateRoad();
-        Car createCar = new Car();
-        createCar.generateCar();
-        scene = new Scene(god,createMap.sceneWidth,createMap.sceneHeight);
-        scene.setFill(Color.GREEN);
-        god.getChildren().addAll(createMap.groupForMap, createCar.stack);
-        
-        timer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                createCar.setRoadX(createMap.getRoadTopX());
-                createCar.setDirection(createMap.getDirection());
-                createCar.move(rotation);
-            }
-            
-        };
-        
-        timer.start();
+        //Shows only the main menu
+        MainMenu mainMenu = new MainMenu();
+        menuScene = new Scene(mainMenu.menuItems , 1280 , 720);
+        menuScene.setFill(Color.GREEN);
         primaryStage.setTitle("Lada The Ultimate Challenge 2017");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(menuScene);
         primaryStage.show();
+        
+        //Main menu button functions
+        mainMenu.buttonStart.setOnMouseClicked((MouseEvent e) -> {
+            AnimationTimer timer;
+            mediaPlayer.play();
+            
+            //Create objects
+            createMap = new CreateMap();
+            createCar = new Car();
+            scene = new Scene(god,createMap.sceneWidth,createMap.sceneHeight);
+            createMap.generateRoad();
+            scene.setFill(Color.GREEN);
+            createCar.generateCar();
+
+            scene.setOnMouseMoved((MouseEvent a) -> {
+                createCar.move(a);
+            });
+            timer = new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    createCar.setRoadX(createMap.getRoadTopX());
+                    createCar.setDirection(createMap.getDirection());
+                    createCar.move(rotation);
+                }
+            };
+            timer.start();
+            god.getChildren().addAll(createMap.groupForMap, createCar.stack);
+            primaryStage.setScene(scene);
+        });
+        
+        mainMenu.buttonScores.setOnMouseClicked((MouseEvent e) -> {
+            //TODO
+        });
+        
+        mainMenu.buttonQuit.setOnMouseClicked((MouseEvent e) -> {
+            Platform.exit();
+        });
     }
 
     public static void main(String[] args) {

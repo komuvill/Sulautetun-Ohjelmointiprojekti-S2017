@@ -79,7 +79,7 @@ public class Car extends Rectangle{
         obstacles.setManaged(false);
         playerGroup.setManaged(false);
         
-        Car player = new Car(600, 500, 75, 150, new Image("picassoRED.png"));
+        Car player = new Car(600, 500, 75, 150, new Image("player.png"));
         
         /*player.setOnMouseDragged((MouseEvent e) -> { //Ohjaus hiirellä
             player.setX(e.getSceneX() - player.getWidth() / 2);
@@ -126,7 +126,7 @@ public class Car extends Rectangle{
                
 
                 if(Math.random() * 1500 < ++timer && timer > 50) { //spawn
-                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 75), -200, 75, 150, new Image("picassoGREEN.png"));
+                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 75), -200, 75, 150, new Image("enemy.png"));
 
                     nodes.add(newCar);
                     newCar.setRotate(180);

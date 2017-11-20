@@ -18,9 +18,14 @@ public class Car extends Rectangle{
     Group obstacles = new Group();
     Group playerGroup = new Group();
     StackPane stack = new StackPane();
+    private HP health;
     private final int sceneWidth = createMap.sceneWidth;
     private final int sceneHeight = createMap.sceneHeight;
+    private double roadTopX;
     private double roadX;
+    private double grassX;
+    private int roadWidth;
+    private double grassWidth;
     private String direction;
     private double degree;
     private final double mouseCenter = sceneWidth / 2;
@@ -63,8 +68,25 @@ public class Car extends Rectangle{
         return Shape.intersect(this, other).getBoundsInLocal().getWidth() != -1;
     }
     
+    public void setRoadTopX(double roadTopX) {
+        this.roadTopX = roadTopX;
+    }
+    
     public void setRoadX(double roadX) {
         this.roadX = roadX;
+        System.out.println(roadX);
+    }
+    
+    public void setGrassX(double grassX) {
+        this.grassX = grassX;
+    }
+    
+    public void setRoadWidth(int roadWidth) {
+        this.roadWidth = roadWidth;
+    }
+    
+    public void setGrassWidth(double grassWidth) {
+        this.grassWidth = grassWidth;
     }
     
     public void setDirection(String direction) {
@@ -72,7 +94,7 @@ public class Car extends Rectangle{
     }
     
     public void generateCar() {
-        
+        health = new HP();
         
         ArrayList<Car> nodes = new ArrayList();
 
@@ -91,32 +113,33 @@ public class Car extends Rectangle{
         playerGroup.getChildren().add(player); //pelaaja
         
         
-        stack.getChildren().addAll(obstacles, playerGroup, explosion.explosions);
+        stack.getChildren().addAll(obstacles, playerGroup, explosion.explosions, health.getGroup());
         
         
         animation_timer = new AnimationTimer() { //Game Loop
             
             int timer = 0;
             Boolean collided;
+            Boolean roadData = false; //roadX on alussa nolla
             ArrayList<Car> despawning = new ArrayList();
             
             @Override
             public void handle(long now) {
+                double playerX = player.getX() + 75 / 2;
                 
                 if(Math.abs(serialRotation) > deadzone) { //liike
                     velocity += serialRotation / 20;
-                    if(Math.abs(velocity) > 30){ 
+                    if(Math.abs(velocity) > 30)
                         velocity = 30 * serialRotation / Math.abs(serialRotation);
-                    }
                 } else velocity = velocity * 0.9;
+                
                 player.setX(player.getX() + velocity / 6);
                 
                 // Varmistetaan, että auto pysyy pelialueen sisällä
                 if(player.getX() < 0) {
                     player.setX(0);
                     velocity = 0;
-                }
-                else if(player.getX() > sceneWidth - 75) {
+                } else if(player.getX() > sceneWidth - 75) {
                     player.setX(sceneWidth - 75);
                     velocity = 0;
                 }
@@ -126,7 +149,7 @@ public class Car extends Rectangle{
                
 
                 if(Math.random() * 1500 < ++timer && timer > 50) { //spawn
-                    Car newCar = new Car(roadX + Math.random() * (createMap.getRoadWidth() - 75), -200, 75, 150, new Image("enemy.png"));
+                    Car newCar = new Car(roadTopX + Math.random() * (createMap.getRoadWidth() - 75), -200, 75, 150, new Image("enemy.png"));
 
                     nodes.add(newCar);
                     newCar.setRotate(180);
@@ -167,6 +190,7 @@ public class Car extends Rectangle{
                     if(player.checkCollision(car)) {
                         car.setState(REQUEST_EXPLOSION);
                         explosion.explode(car);
+                        if(car.getOpacity() > 0) health.hitCar();
                         car.setOpacity(0);
                     }
                 }
@@ -175,6 +199,13 @@ public class Car extends Rectangle{
                     obstacles.getChildren().removeAll(despawning);
                     nodes.removeAll(despawning);
                     despawning.clear();
+                }
+                
+                //Tiellä pysymisen valvonta
+                if(!roadData) roadData = (roadX > 0) ? true : false;
+                else {
+                    if(playerX < grassX || playerX > grassX + grassWidth) health.hitOut();
+                    else if(playerX < roadX || playerX > roadX + roadWidth) health.hitGrass();
                 }
             }
         };

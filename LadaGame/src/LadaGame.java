@@ -2,6 +2,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.media.Media;
@@ -10,7 +11,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import gnu.io.CommPortIdentifier; 
+import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
@@ -34,7 +35,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM37", // Windows
+			"COM7", // Windows
                         };
     BufferedReader input;
     OutputStream output;
@@ -107,14 +108,15 @@ public class LadaGame extends Application implements SerialPortEventListener {
             createMap.generateRoad();
             scene.setFill(Color.GREEN);
             createCar.generateCar();
+            createCar.setRoadWidth(createMap.getRoadWidth());
+            createCar.setGrassWidth(createMap.getGrassWidth());
 
-            scene.setOnMouseMoved((MouseEvent a) -> {
-                createCar.move(a);
-            });
             timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    createCar.setRoadX(createMap.getRoadTopX());
+                    createCar.setRoadTopX(createMap.getRoadTopX());
+                    createCar.setRoadX(createMap.getRoadX());
+                    createCar.setGrassX(createMap.getGrassX());
                     createCar.setDirection(createMap.getDirection());
                     createCar.move(rotation);
                 }
@@ -136,7 +138,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
     public static void main(String[] args) {
         launch(args);
     }
-
+    
     @Override
     public void serialEvent(SerialPortEvent oEvent) {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {

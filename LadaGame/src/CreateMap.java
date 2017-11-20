@@ -193,10 +193,21 @@ public class CreateMap {
                     //Move all of the slices of road vertically
                     node.setY(node.getY() + roadHeight);
                     
-                    if(rect.indexOf(node) == 0) { //Get coordinates for the bottom of the road
-                        grassX = node.getX();
-                        roadX = grassX + (grassWidth - roadWidth) / 2;
+                    //Get coordinates for road and grass at player
+                    if(rect.get(0).getHeight() > 5) { 
+                        roadX = rect.get(1).getX();
+                        grassX = rect.get(0).getX();
                     }
+                    else {
+                        roadX = rect.get(Math.min(57, rect.size() - 1)).getX();
+                        grassX = rect.get(Math.min(56, rect.size() - 2)).getX();
+                    }
+                    
+                    
+                    /*if(rect.indexOf(node) == 0) { //Get coordinates for the bottom of the road
+                        grassX = node.getX();
+                        roadBottomX = grassX + (grassWidth - roadWidth) / 2;
+                    }*/
                 });
                 if(!despawn.isEmpty()) {
                         rect.removeAll(despawn);

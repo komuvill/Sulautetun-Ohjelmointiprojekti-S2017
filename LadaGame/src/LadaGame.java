@@ -19,6 +19,7 @@ import java.util.Enumeration;
 import javafx.event.EventHandler;
 import javafx.stage.WindowEvent;
 import javafx.application.Platform;
+import javafx.stage.WindowEvent;
 
 public class LadaGame extends Application implements SerialPortEventListener {
     Group god = new Group();
@@ -132,6 +133,17 @@ public class LadaGame extends Application implements SerialPortEventListener {
         
         mainMenu.buttonQuit.setOnMouseClicked((MouseEvent e) -> {
             Platform.exit();
+        });
+	
+	primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                if(serialPort != null) {
+                    serialPort.close();
+                    serialPort.removeEventListener();
+                }
+                System.exit(0);
+            } 
         });
     }
 

@@ -25,7 +25,7 @@ public class Car extends Rectangle{
     private double degree;
     private final double mouseCenter = sceneWidth / 2;
     private final double deadzone = 20;
-    private double mouseX = 0;
+    private double serialRotation = 0;
     private double velocity = 0;
     Car newCar;
     
@@ -55,8 +55,8 @@ public class Car extends Rectangle{
         
     }
     
-    public void move(MouseEvent e) {
-        mouseX = e.getSceneX() - mouseCenter;
+    public void move(double rotation) {
+        serialRotation = rotation;
     }
     
     public Boolean checkCollision(Shape other) { //palauttaa tosi jos tämä ja other leikkaa
@@ -103,13 +103,15 @@ public class Car extends Rectangle{
             @Override
             public void handle(long now) {
                 
-                if(Math.abs(mouseX) > deadzone) { //liike
-                    velocity += mouseX / 100;
-                    if(Math.abs(velocity) > 60) velocity = 60 * mouseX / Math.abs(mouseX);
+                if(Math.abs(serialRotation) > deadzone) { //liike
+                    velocity += serialRotation / 20;
+                    if(Math.abs(velocity) > 30){ 
+                        velocity = 30 * serialRotation / Math.abs(serialRotation);
+                    }
                 } else velocity = velocity * 0.9;
-                
                 player.setX(player.getX() + velocity / 6);
                 
+                // Varmistetaan, että auto pysyy pelialueen sisällä
                 if(player.getX() < 0) {
                     player.setX(0);
                     velocity = 0;

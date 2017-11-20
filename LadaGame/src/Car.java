@@ -74,7 +74,6 @@ public class Car extends Rectangle{
     
     public void setRoadX(double roadX) {
         this.roadX = roadX;
-        System.out.println(roadX);
     }
     
     public void setGrassX(double grassX) {

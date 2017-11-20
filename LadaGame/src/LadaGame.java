@@ -17,7 +17,6 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener; 
 import java.util.Enumeration;
 import javafx.event.EventHandler;
-import javafx.stage.WindowEvent;
 import javafx.application.Platform;
 import javafx.stage.WindowEvent;
 
@@ -36,7 +35,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM7", // Windows
+			"COM6", // Windows
                         };
     BufferedReader input;
     OutputStream output;

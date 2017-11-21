@@ -13,15 +13,16 @@ import java.util.logging.Logger;
 
 public class HighscoreClient extends JFrame{
 
-    String nimi;
-    int pisteet;
-    String dataString;
-    Socket clientSocket;
-    JButton submitButton;
-    JLabel scoreLabel, nameLabel;
-    JTextField nameField;
-    JPanel panel;
-    DataOutputStream toServer;
+    private String nimi;
+    private int pisteet;
+    private String dataString;
+    private final Socket clientSocket;
+    private final JButton submitButton;
+    private final JLabel scoreLabel;
+    private final JLabel nameLabel;
+    private final JTextField nameField;
+    private final JPanel panel;
+    private final DataOutputStream toServer;
     
     public HighscoreClient(int pelaajanPisteet) throws IOException{
 

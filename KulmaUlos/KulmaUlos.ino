@@ -49,10 +49,10 @@ void loop() {
 
     // update the filter, which computes orientation
     filter.updateIMU(gx, gy, gz, ax, ay, az);
-
+    
     // print the heading, pitch and roll
     pitch = filter.getPitch();
-    Serial.println(pitch); //We only need the pitch to see which way the genuino is tilted
+    Serial.println((int)(pitch * 100)); //We only need the pitch to see which way the genuino is tilted
 
     // increment previous time, so we keep proper pace
     microsPrevious = microsPrevious + microsPerReading;

@@ -50,16 +50,12 @@ public class HighscoreClient extends JFrame{
         gbc.gridy = 1;
         gbc.gridx = 1;
         panel.add(nameField,gbc);
-        
-
-        
 
         ListenForButton submitClicked = new ListenForButton();
         submitButton.addActionListener(submitClicked);
         
         clientSocket = new Socket("10.4.3.6", 20000); //Tähän Raspberryn IP
         toServer = new DataOutputStream(clientSocket.getOutputStream());
-        
         
         this.add(panel);
         this.pack();

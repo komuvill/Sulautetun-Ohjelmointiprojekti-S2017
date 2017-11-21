@@ -15,7 +15,13 @@ import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent; 
 import gnu.io.SerialPortEventListener; 
+import java.awt.Desktop;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.EventHandler;
 import javafx.application.Platform;
 import javafx.stage.WindowEvent;
@@ -127,7 +133,11 @@ public class LadaGame extends Application implements SerialPortEventListener {
         });
         
         mainMenu.buttonScores.setOnMouseClicked((MouseEvent e) -> {
-            //TODO
+            try {
+                Desktop.getDesktop().browse(new URL("http://www.students.oamk.fi/~t6kovi01/lada/LadaLeaderboards.php").toURI());
+            } catch (IOException | URISyntaxException ex) {
+                Logger.getLogger(LadaGame.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         
         mainMenu.buttonQuit.setOnMouseClicked((MouseEvent e) -> {

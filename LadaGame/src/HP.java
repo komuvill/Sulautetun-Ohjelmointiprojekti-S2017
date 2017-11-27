@@ -20,6 +20,7 @@ public class HP {
     HP() {
         health = MAXHEALTH;
         
+        //HUD
         HpBarFrame = new Rectangle(50, 50, 250, 50);
         HpBarFrame.setFill(Color.TRANSPARENT);
         HpBarFrame.setStrokeWidth(2);
@@ -35,7 +36,7 @@ public class HP {
         HpGroup.setManaged(false);
         HpGroup.getChildren().addAll(HpBarBackground, HpBar, HpBarFrame);
         
-        timer = new AnimationTimer() {
+        timer = new AnimationTimer() { //Main Loop
             @Override
             public void handle(long now) {
                 health = (health > 0.0 && health < MAXHEALTH) ? ++health : health;
@@ -62,6 +63,7 @@ public class HP {
     public void hitOut() {
         health = 0;
     }
+    
     public double getHP() {
         return health;
     }

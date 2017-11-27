@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 
 
 public class HighscoreClient extends JFrame{
@@ -14,7 +15,8 @@ public class HighscoreClient extends JFrame{
     private String nimi;
     private int pisteet;
     private String dataString;
-    private final Socket clientSocket; 
+    private Boolean buttonClicked = false;
+    private final Socket clientSocket;
     private final JButton submitButton;
     private final JLabel scoreLabel;
     private final JLabel nameLabel;
@@ -22,9 +24,9 @@ public class HighscoreClient extends JFrame{
     private final JPanel panel;
     private final DataOutputStream toServer;
     
-    //Luokan konstruktori ottaa parametrina pelaajan pistemäärän
-    public HighscoreClient(int pelaajanPisteet) throws IOException{
-        // Alustetaan labelit yms.
+    public HighscoreClient(int pelaajanPisteet) throws IOException {
+        
+        //Alustetaan labelit yms.
         this.setSize(250,250);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -36,6 +38,7 @@ public class HighscoreClient extends JFrame{
         nameField = new JTextField(25);
         submitButton = new JButton("Submit score!");
         panel = new JPanel(new GridBagLayout());
+        
         //Lisätään elementit ikkunaan
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.gridx = 0;
@@ -50,9 +53,10 @@ public class HighscoreClient extends JFrame{
         gbc.gridy = 1;
         gbc.gridx = 1;
         panel.add(nameField,gbc);
-        //Lisätään pisteiden lähettämisnapille tapahtumakuuntelija
+
         ListenForButton submitClicked = new ListenForButton();
         submitButton.addActionListener(submitClicked);
+        
         //Luodaan serveriin yhdistämiseen tarvittavat socketit ja datastreamit
         clientSocket = new Socket("10.4.3.6", 20000); //Tähän Raspberryn IP
         toServer = new DataOutputStream(clientSocket.getOutputStream());
@@ -64,12 +68,19 @@ public class HighscoreClient extends JFrame{
         
     }
     
+    public Boolean getButtonClicked() {
+        return buttonClicked;
+    }
+    
+    public void closeFrame() {
+        this.dispose();
+    }
+    
     private class ListenForButton implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent ae) {
             if(ae.getSource() == submitButton){
-                //Parsitaan lähetettävä data
                 nimi = nameField.getText();
                 dataString = nimi + "," + Integer.toString(pisteet);
                 try {
@@ -77,6 +88,7 @@ public class HighscoreClient extends JFrame{
                 } catch (IOException ex) {
                     Logger.getLogger(HighscoreClient.class.getName()).log(Level.SEVERE, null, ex);
                 }
+                buttonClicked = true;
             }
         }
     }

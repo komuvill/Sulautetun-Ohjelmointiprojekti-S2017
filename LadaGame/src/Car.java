@@ -1,12 +1,14 @@
+import java.io.IOException;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.*;
 import javafx.animation.*;
-import javafx.scene.input.*;
 import javafx.scene.shape.Shape;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.Scene;
 
 
@@ -19,7 +21,8 @@ public class Car extends Rectangle{
     Group playerGroup = new Group();
     StackPane stack = new StackPane();
     private HP health;
-    HighscoreClient highScore;
+    private Score score;
+    private HighscoreClient highScore;
     private final int sceneWidth = createMap.sceneWidth;
     private final int sceneHeight = createMap.sceneHeight;
     private double roadTopX;
@@ -93,8 +96,21 @@ public class Car extends Rectangle{
         this.direction = direction;
     }
     
+    public double getHP() {
+        return health.getHP();
+    }
+    
+    public int getScore() {
+        return score.getScore();
+    }
+    
+    public void stopTimer() {
+        animation_timer.stop();
+    }
+    
     public void generateCar() {
         health = new HP();
+        score = new Score();
         
         ArrayList<Car> nodes = new ArrayList();
 
@@ -113,7 +129,7 @@ public class Car extends Rectangle{
         playerGroup.getChildren().add(player); //pelaaja
         
         
-        stack.getChildren().addAll(obstacles, playerGroup, explosion.explosions, health.getGroup());
+        stack.getChildren().addAll(obstacles, playerGroup, explosion.explosions, health.getGroup(), score.getGroup());
         
         
         animation_timer = new AnimationTimer() { //Game Loop
@@ -190,7 +206,10 @@ public class Car extends Rectangle{
                     if(player.checkCollision(car)) {
                         car.setState(REQUEST_EXPLOSION);
                         explosion.explode(car);
-                        if(car.getOpacity() > 0) health.hitCar();
+                        if(car.getOpacity() > 0) {
+                            health.hitCar();
+                            score.resetCombo();
+                        }
                         car.setOpacity(0);
                     }
                 }
@@ -205,11 +224,11 @@ public class Car extends Rectangle{
                 if(!roadData) roadData = (roadX > 0) ? true : false;
                 else {
                     if(playerX < grassX || playerX > grassX + grassWidth) health.hitOut();
-                    else if(playerX < roadX || playerX > roadX + roadWidth) health.hitGrass();
-                }
-                
-                if(health.getHP() == 0) {
-                    highScore = new HighscoreClient(/*TÄNNE JOKU MUUTTUJA*/);
+                    else if(playerX < roadX || playerX > roadX + roadWidth) {
+                        health.hitGrass();
+                        score.resetCombo();
+                    }
+                    else score.score();
                 }
             }
         };

@@ -30,18 +30,21 @@ public class LadaGame extends Application implements SerialPortEventListener {
     Group god = new Group();
     Scene scene;
     Scene menuScene;
+    AnimationTimer timer;
     public String lada = "lada.mp3";
     Media hit = new Media(new File(lada).toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
     Car createCar;
     CreateMap createMap;
+    HighscoreClient highScore;
+    private Boolean gameEnded = false;
     SerialPort serialPort;
     //Muuta vastaamaan käytettävää porttia
     static final String PORT_NAMES[] = { 
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM6", // Windows
+			"COM7", // Windows
                         };
     BufferedReader input;
     OutputStream output;
@@ -49,8 +52,15 @@ public class LadaGame extends Application implements SerialPortEventListener {
     final int DATA_RATE = 9600;
     double rotation = 0;
     
+    private void clearTimer() {
+        timer = null;
+    }
+    
     @Override
     public void start(Stage primaryStage) {
+        scene = new Scene(god, 1280, 720);
+        scene.setFill(Color.GREEN);
+        
         CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
         //First, Find an instance of serial port as set in PORT_NAMES.
@@ -103,16 +113,14 @@ public class LadaGame extends Application implements SerialPortEventListener {
         primaryStage.show();
         
         //Main menu button functions
-        mainMenu.buttonStart.setOnMouseClicked((MouseEvent e) -> {
-            AnimationTimer timer;
+        mainMenu.buttonStart.setOnMouseClicked((MouseEvent e) -> { 
+            mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
             mediaPlayer.play();
             
             //Create objects
             createMap = new CreateMap();
             createCar = new Car();
-            scene = new Scene(god,createMap.sceneWidth,createMap.sceneHeight);
             createMap.generateRoad();
-            scene.setFill(Color.GREEN);
             createCar.generateCar();
             createCar.setRoadWidth(createMap.getRoadWidth());
             createCar.setGrassWidth(createMap.getGrassWidth());
@@ -120,11 +128,39 @@ public class LadaGame extends Application implements SerialPortEventListener {
             timer = new AnimationTimer() {
                 @Override
                 public void handle(long now) {
-                    createCar.setRoadTopX(createMap.getRoadTopX());
-                    createCar.setRoadX(createMap.getRoadX());
-                    createCar.setGrassX(createMap.getGrassX());
-                    createCar.setDirection(createMap.getDirection());
-                    createCar.move(rotation);
+                    if(!gameEnded) {
+                        createCar.setRoadTopX(createMap.getRoadTopX());
+                        createCar.setRoadX(createMap.getRoadX());
+                        createCar.setGrassX(createMap.getGrassX());
+                        createCar.setDirection(createMap.getDirection());
+                        createCar.move(rotation);
+
+                        if(createCar.getHP() == 0) {
+                            try {
+                                highScore = new HighscoreClient(createCar.getScore());
+                            } catch (IOException ex) {
+                                Logger.getLogger(Car.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            createCar.stopTimer();
+                            createMap.stopTimer();
+                            gameEnded = true;
+                        }
+                    } else {
+                        if(highScore.getButtonClicked()) {
+                            highScore.closeFrame();
+                            highScore = null;
+                            createCar = null;
+                            createMap = null;
+                            primaryStage.setScene(menuScene);
+                            god.getChildren().clear();
+                            
+                            mediaPlayer.stop();
+                            timer.stop();
+                            clearTimer();
+                            gameEnded = false;
+                            System.gc();
+                        }
+                    }
                 }
             };
             timer.start();
@@ -164,7 +200,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
     public void serialEvent(SerialPortEvent oEvent) {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
 			try {
-                                rotation = Double.parseDouble(input.readLine());
+                                rotation = Double.parseDouble(input.readLine()) / 100 - 10;
 			} catch (Exception e) {
 				System.err.println(e.toString());
                         }

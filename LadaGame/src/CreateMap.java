@@ -34,14 +34,15 @@ public class CreateMap {
     private String direction = "straight";
     
     
-    //Timer, node indexing, scene creation
+    //Timer, node indexing
     private AnimationTimer timer;
     private final ArrayList<Rectangle> rect = new ArrayList<>();
-    //Scene scene;
     
     public CreateMap(){
         
     }
+    
+    //Getters
     public String getDirection() {
         return direction;
     }
@@ -113,7 +114,7 @@ public class CreateMap {
         groupForMap.getChildren().add(startRoadBlock);
         
         
-        timer = new AnimationTimer() {
+        timer = new AnimationTimer() { //Main loop of this class
             
             int tick = 150; //"Slices" of road that will go to a same direction
             

@@ -19,6 +19,7 @@ public class Car extends Rectangle{
     Group playerGroup = new Group();
     StackPane stack = new StackPane();
     private HP health;
+    HighscoreClient highScore;
     private final int sceneWidth = createMap.sceneWidth;
     private final int sceneHeight = createMap.sceneHeight;
     private double roadTopX;
@@ -205,6 +206,10 @@ public class Car extends Rectangle{
                 else {
                     if(playerX < grassX || playerX > grassX + grassWidth) health.hitOut();
                     else if(playerX < roadX || playerX > roadX + roadWidth) health.hitGrass();
+                }
+                
+                if(health.getHP() == 0) {
+                    highScore = new HighscoreClient(/*TÄNNE JOKU MUUTTUJA*/);
                 }
             }
         };

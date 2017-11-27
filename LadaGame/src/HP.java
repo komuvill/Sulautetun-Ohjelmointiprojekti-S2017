@@ -62,4 +62,7 @@ public class HP {
     public void hitOut() {
         health = 0;
     }
+    public double getHP() {
+        return health;
+    }
 }

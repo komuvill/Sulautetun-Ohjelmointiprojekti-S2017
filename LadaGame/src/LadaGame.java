@@ -31,7 +31,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
     Scene scene;
     Scene menuScene;
     AnimationTimer timer;
-    public String lada = "lada.mp3";
+    public String lada = "lada.wav";
     Media hit = new Media(new File(lada).toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
     Car createCar;

@@ -31,21 +31,25 @@ public class LadaGame extends Application implements SerialPortEventListener {
     Scene scene;
     Scene menuScene;
     AnimationTimer timer;
-    public String lada = "lada.wav";
+    AnimationTimer serialTimer;
+    long schedule = System.nanoTime() + 10^9;
+    public String lada = "lada.mp3";
     Media hit = new Media(new File(lada).toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
+    MainMenu mainMenu;
     Car createCar;
     CreateMap createMap;
     HighscoreClient highScore;
     private Boolean gameEnded = false;
     SerialPort serialPort;
+    CommPortIdentifier portId = null;
     //Muuta vastaamaan käytettävää porttia
-    static final String PORT_NAMES[] = { 
+    /*static final String PORT_NAMES[] = { 
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
 			"COM7", // Windows
-                        };
+                        };*/
     BufferedReader input;
     OutputStream output;
     final int TIME_OUT = 2000;
@@ -56,23 +60,22 @@ public class LadaGame extends Application implements SerialPortEventListener {
         timer = null;
     }
     
-    @Override
-    public void start(Stage primaryStage) {
-        scene = new Scene(god, 1280, 720);
-        scene.setFill(Color.GREEN);
-        
-        CommPortIdentifier portId = null;
-        Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+    private void waitSerial() {
         //First, Find an instance of serial port as set in PORT_NAMES.
+        Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
+
         while (portEnum.hasMoreElements()) {
                 CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-                for (String portName : PORT_NAMES) {
+                portId = currPortId;
+
+                /*for (String portName : PORT_NAMES) {
                         if (currPortId.getName().equals(portName)) {
                                 portId = currPortId;
                                 break;
                         }
-                }
+                }*/
         }
+
         if(portId == null){
                 /*
                 * Tämän pitäisi oikeastaan näkyä jotenkin pelinäkymässä,
@@ -81,31 +84,40 @@ public class LadaGame extends Application implements SerialPortEventListener {
                 System.out.println("Could not find COM port.");
                 return;
         }
-
+        
+        serialTimer.stop();
+        
+        mainMenu.serialReady();
         try{
-                // open serial port, and use class name for the appName.
-                serialPort = (SerialPort) portId.open(this.getClass().getName(),
-                                TIME_OUT);
+            // open serial port, and use class name for the appName.
+            serialPort = (SerialPort) portId.open(this.getClass().getName(),
+                            TIME_OUT);
 
-                // set port parameters
-                serialPort.setSerialPortParams(DATA_RATE,
-                                SerialPort.DATABITS_8,
-                                SerialPort.STOPBITS_1,
-                                SerialPort.PARITY_NONE);
+            // set port parameters
+            serialPort.setSerialPortParams(DATA_RATE,
+                            SerialPort.DATABITS_8,
+                            SerialPort.STOPBITS_1,
+                            SerialPort.PARITY_NONE);
 
-                // open the streams
-                input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
-                output = serialPort.getOutputStream();
+            // open the streams
+            input = new BufferedReader(new InputStreamReader(serialPort.getInputStream()));
+            output = serialPort.getOutputStream();
 
-                // add event listeners
-                serialPort.addEventListener(this);
-                serialPort.notifyOnDataAvailable(true);
+            // add event listeners
+            serialPort.addEventListener(this);
+            serialPort.notifyOnDataAvailable(true);
         }catch (Exception e) {
                 System.err.println(e.toString());
         }
+    }
+    
+    @Override
+    public void start(Stage primaryStage) {
+        scene = new Scene(god, 1280, 720);
+        scene.setFill(Color.GREEN);
         
         //Shows only the main menu
-        MainMenu mainMenu = new MainMenu();
+        mainMenu = new MainMenu();
         menuScene = new Scene(mainMenu.menuItems , 1280 , 720);
         menuScene.setFill(Color.GREEN);
         primaryStage.setTitle("Lada The Ultimate Challenge 2017");
@@ -190,6 +202,17 @@ public class LadaGame extends Application implements SerialPortEventListener {
                 System.exit(0);
             } 
         });
+        
+        serialTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                if(now > schedule) {
+                    schedule += 10e8;
+                    waitSerial();
+                }
+            }
+        };
+        serialTimer.start();
     }
 
     public static void main(String[] args) {

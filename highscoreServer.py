@@ -25,7 +25,7 @@ class highscoreServer:
         try:
             request, client_address = self.sock.accept() #Odotellaan yhdistämistä clientiltä
             print("Received connection from ", client_address) 
-            data = request.recv(20)
+            data = request.recv(128)
             stringdata = data.decode('utf-8', 'ignore') #Data saapuu UTF-8-koodattuna
             stringdata = stringdata[2:len(stringdata)].split(",") #Siivotaan alun "roska"merkit ja palastellaan data nimeen ja pisteisiin
             name = stringdata[0]

@@ -58,7 +58,7 @@ public class HighscoreClient extends JFrame{
         submitButton.addActionListener(submitClicked);
         
         //Luodaan serveriin yhdistämiseen tarvittavat socketit ja datastreamit
-        clientSocket = new Socket("10.4.3.6", 20000); //Tähän Raspberryn IP
+        clientSocket = new Socket("10.4.2.20", 20000); //Tähän Raspberryn IP
         toServer = new DataOutputStream(clientSocket.getOutputStream());
         
         this.add(panel);

@@ -44,12 +44,12 @@ public class LadaGame extends Application implements SerialPortEventListener {
     SerialPort serialPort;
     CommPortIdentifier portId = null;
     //Muuta vastaamaan käytettävää porttia
-    /*static final String PORT_NAMES[] = { 
+    static final String PORT_NAMES[] = { 
 			"/dev/tty.usbserial-A9007UX1", // Mac OS X
                         "/dev/ttyACM0", // Raspberry Pi
 			"/dev/ttyUSB0", // Linux
-			"COM7", // Windows
-                        };*/
+			"COM6", // Windows
+                        };
     BufferedReader input;
     OutputStream output;
     final int TIME_OUT = 2000;
@@ -68,12 +68,12 @@ public class LadaGame extends Application implements SerialPortEventListener {
                 CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
                 portId = currPortId;
 
-                /*for (String portName : PORT_NAMES) {
+                for (String portName : PORT_NAMES) {
                         if (currPortId.getName().equals(portName)) {
                                 portId = currPortId;
                                 break;
                         }
-                }*/
+                }
         }
 
         if(portId == null){

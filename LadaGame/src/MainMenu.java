@@ -1,20 +1,28 @@
 import javafx.scene.Group;
 import javafx.scene.layout.*;
 import javafx.geometry.Pos;
+import javafx.scene.text.*;
 import javafx.scene.control.Button;
 
 public class MainMenu {
     
     Group menuItems = new Group();
     CreateMap createMap = new CreateMap();
+    VBox vBtn;
     Button buttonStart;
     Button buttonScores;
     Button buttonQuit;
+    Text serialText;
+    
+    public void serialReady() {
+        vBtn.getChildren().clear();
+        vBtn.getChildren().addAll(buttonStart,buttonScores,buttonQuit);
+    }
     
     public MainMenu() {
         
         BorderPane border = new BorderPane();
-        VBox vBtn = new VBox();
+        vBtn = new VBox();
         menuItems.setManaged(false);
         
         border.setCenter(vBtn);
@@ -25,6 +33,8 @@ public class MainMenu {
         buttonStart = new Button();
         buttonScores = new Button();
         buttonQuit = new Button();
+        serialText = new Text("Searching for serial...");
+        serialText.setFont(Font.font("Verdana", FontWeight.BOLD, 30));
         
         buttonStart.setPrefSize(132, 44);
         buttonStart.setStyle("-fx-background-image: url('startBtn.jpg')");
@@ -34,7 +44,7 @@ public class MainMenu {
         buttonQuit.setPrefSize(105, 44);
         
         
-        vBtn.getChildren().addAll(buttonStart,buttonScores,buttonQuit);
+        vBtn.getChildren().addAll(serialText,buttonScores,buttonQuit);
         menuItems.getChildren().addAll(border);
     }
 }

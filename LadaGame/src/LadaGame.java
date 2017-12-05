@@ -32,7 +32,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
     Scene menuScene;
     AnimationTimer timer;
     AnimationTimer serialTimer;
-    long schedule = System.nanoTime() + 10^9;
+    long schedule = System.nanoTime();
     public String lada = "lada.wav";
     Media hit = new Media(new File(lada).toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(hit);
@@ -66,7 +66,7 @@ public class LadaGame extends Application implements SerialPortEventListener {
 
         while (portEnum.hasMoreElements()) {
                 CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
-                portId = currPortId;
+                //portId = currPortId;
 
                 for (String portName : PORT_NAMES) {
                         if (currPortId.getName().equals(portName)) {
